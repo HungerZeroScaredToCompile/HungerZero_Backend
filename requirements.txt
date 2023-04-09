@@ -1,0 +1,7 @@
+djangorestframework-simplejwt
+djangorestframework
+django
+phonenumber_field
+phonenumbers
+django-money
+pillow
