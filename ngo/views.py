@@ -8,6 +8,7 @@ from LoginReg.models import User
 from user.models import Notifications
 from joblib import load
 
+
 # load model and vectorizer
 model = load('model.joblib')
 cv = load('cv.joblib')
@@ -154,14 +155,8 @@ class FeedbackAPIView(APIView):
             notification = Notifications.objects.create(
                 user=user,
                 topic='New Feedback',
-                content=[f'hey']
+                content=f'hey'
             )
-            content=["the food was bad"]
-            result = model.predict(cv.transform(content))
-            if(result==0):
-                print("Postive Response")
-            else:
-                print("Negative Response")
             notification.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -177,13 +172,13 @@ class FeedbackAPIView(APIView):
         serializer = FeedbackSerializer(ngo,many=True)
         return Response(serializer.data)
 
-def FBAnalysis(request):
-    content=["the food was bad"]
-    result = model.predict(cv.transform(content))
-    if(result==1):
-        print("Postive Response")
-    else:
-        print("Negative Response")
+# def FBAnalysis(request):
+#     content=["the food was bad"]
+#     result = model.predict(cv.transform(content))
+#     if(result==1):
+#         print("Postive Response")
+#     else:
+#         print("Negative Response")
 
 
 

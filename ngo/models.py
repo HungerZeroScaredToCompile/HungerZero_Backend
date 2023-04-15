@@ -1,5 +1,15 @@
 from django.db import models
 from LoginReg.models import User
+from joblib import load
+import pickle
+
+# load model and vectorizer
+# model = load('model.joblib')
+# cv = load('cv.joblib')
+
+# #model for sentiment analysis
+model=pickle.load(open('NLP-Sentiment_Analysis.pkl','rb'))
+cv = pickle.load(open('cv.pkl','rb'))
 
 # Create your models here.
 class Profile(models.Model):
@@ -27,7 +37,21 @@ class Feedback(models.Model):
     name=models.CharField(max_length=100,default=None)
     ratings=models.IntegerField()
     description=models.TextField(max_length=500)
-    #ppl_health_improved = 
+    fbanalysis = models.CharField(max_length=100,null=True,blank=True) 
+
+    def fbcheck(self):
+        content=[self.description]
+        result = model.predict(cv.transform(content))
+        if(result==1):
+            answer = "Postive Response"
+        else:
+            answer = "Negative Response"
+
+        return answer
+
+    def save(self,*args,**kwargs):
+        self.fbanalysis=self.fbcheck
+        super(Feedback, self).save(*args,**kwargs)
     
 
 # class NewVolunteers(models.Model):

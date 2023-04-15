@@ -13,6 +13,5 @@ urlpatterns = [
     #url for feedback
     path('feedback/',views.FeedbackAPIView.as_view()),
     path('feedback/<int:pk>',views.FeedbackAPIView.as_view()),
-    path('feedbackanalysis',views.FBAnalysis)
 
 ]
