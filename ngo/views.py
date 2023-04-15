@@ -6,6 +6,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from LoginReg.models import User
 from user.models import Notifications
+from joblib import load
+
+# load model and vectorizer
+model = load('model.joblib')
+cv = load('cv.joblib')
 # Create your views here.
 
 #for profile model
@@ -149,12 +154,36 @@ class FeedbackAPIView(APIView):
             notification = Notifications.objects.create(
                 user=user,
                 topic='New Feedback',
-                content=f'hey'
+                content=[f'hey']
             )
+            content=["the food was bad"]
+            result = model.predict(cv.transform(content))
+            if(result==0):
+                print("Postive Response")
+            else:
+                print("Negative Response")
             notification.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self,request,pk=None,format=None):
+        id=pk
+        if id is not None:
+            ngo = Feedback.objects.get(id=id)
+            serializer = FeedbackSerializer(ngo)
+            return Response(serializer.data)
+        ngo = Feedback.objects.all()
+        serializer = FeedbackSerializer(ngo,many=True)
+        return Response(serializer.data)
+
+def FBAnalysis(request):
+    content=["the food was bad"]
+    result = model.predict(cv.transform(content))
+    if(result==1):
+        print("Postive Response")
+    else:
+        print("Negative Response")
 
 
 
